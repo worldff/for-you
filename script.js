@@ -355,3 +355,53 @@ if ('serviceWorker' in navigator) {
         // Service worker can be registered here for offline functionality
     });
 }
+
+// Efek mengetik untuk paragraf subtitle
+const subtitleEl = document.querySelector('.subtitle');
+
+// Isi teks romantis
+const loveText = `Sayangku…
+Hari ini dunia terasa sedikit lebih hangat, lebih indah, dan lebih berwarna, karena hari ini adalah hari di mana seseorang yang paling berharga dalam hidupku dilahirkan. Seorang gadis yang begitu cantik, bukan hanya di luar, tapi juga di dalam. Kamu.
+
+Aku sering berpikir, bagaimana bisa seseorang secantik kamu hadir dalam hidupku? Kamu seperti puisi yang hidup — setiap senyum, setiap tatapan, setiap ucapanmu punya makna yang menenangkan. Ada sesuatu dalam dirimu yang tidak bisa dijelaskan dengan kata-kata biasa. Kamu bukan hanya cantik, kamu menenangkan, kamu lembut, kamu rumah bagi hati yang lelah.
+
+Hari ini aku tidak hanya ingin bilang selamat ulang tahun, tapi juga terima kasih.
+Terima kasih karena sudah ada.
+Terima kasih karena tetap bertahan bersamaku meski kadang aku belum sempurna.
+Terima kasih karena selalu memberi warna, cinta, dan kedamaian di setiap langkahku.
+
+Aku tahu, waktu akan terus berjalan, dan kita akan melewati banyak hal bersama — tawa, tangis, mimpi, mungkin juga luka. Tapi satu hal yang pasti: aku akan selalu memilih kamu. Di setiap versi diriku, di setiap masa yang akan datang.
+
+Semoga di hari istimewamu ini, semua doa baik berbaris rapi menghampirimu.
+Semoga setiap langkahmu dikelilingi cinta, keberkahan, dan kebahagiaan yang tidak pernah habis.
+Dan semoga… aku selalu punya kesempatan untuk menemanimu di setiap ulang tahunmu berikutnya — bukan hanya sebagai kekasih, tapi juga sebagai seseorang yang akan selalu berusaha membuatmu bahagia.
+
+Selamat ulang tahun, cinta seindah matahari sore yang menenangkan.
+Kamu cantik hari ini, seperti biasanya… tapi entah kenapa, hari ini kamu terlihat jauh lebih menakjubkan.
+Aku mencintaimu hari ini, besok, dan untuk selamanya. 💞`;
+
+subtitleEl.innerHTML = ''; // kosongkan dulu teksnya
+
+let index = 0;
+const speed = 45; // kecepatan ketikan (ms per huruf)
+
+function typeText() {
+  if (index < loveText.length) {
+    const currentChar = loveText.charAt(index);
+
+    // jika karakter adalah newline → ubah jadi <br>
+    if (currentChar === '\n') {
+      subtitleEl.innerHTML += '<br>';
+    } else {
+      subtitleEl.innerHTML += currentChar;
+    }
+
+    index++;
+    setTimeout(typeText, speed);
+  } else {
+    subtitleEl.style.borderRight = 'none'; // hapus kursor setelah selesai
+  }
+}
+
+// Jalankan saat halaman selesai dimuat
+window.addEventListener('load', typeText);
