@@ -1063,3 +1063,112 @@ html[data-paused="1"] .music-visualizer .bar {
     opacity: 1;
     transform: none;
 }
+
+/* ====== MOBILE FIX & POLISH (OVERRIDE) ====== */
+
+/* pastikan tidak ada overflow horisontal tersembunyi dari elemen animasi */
+html,
+body {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* navbar: biar rapi di HP – scroll horizontal halus kalau item banyak */
+.nav-inner {
+    gap: 10px;
+}
+
+.nav-inner nav {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    scrollbar-width: none;
+    /* Firefox */
+    max-width: 52vw;
+    /* ruang untuk tombol di kanan */
+}
+
+.nav-inner nav::-webkit-scrollbar {
+    display: none;
+}
+
+.nav-inner nav a {
+    display: inline-block;
+    padding: .45rem .6rem;
+}
+
+/* beri ruang di bawah navbar sticky agar hero tidak “ketimpa” */
+.hero-section {
+    width: 100%;
+    min-height: calc(var(--vh, 1vh) * 100);
+    /* perbaiki 100vh di mobile */
+    padding-top: max(8px, env(safe-area-inset-top));
+}
+
+/* batasi lebar kartu & margin samping di HP agar tidak mepet */
+@media (max-width: 480px) {
+    .section-card {
+        margin: 1.2rem 12px;
+        padding: 1.25rem;
+    }
+
+    .video-frame {
+        width: 92vw;
+    }
+
+    .memory-card img {
+        height: 180px;
+    }
+}
+
+/* pastikan gambar & video tidak bikin overflow */
+img,
+video {
+    max-width: 100%;
+    height: auto;
+}
+
+/* rapikan background hero agar mulus tanpa “belah dua” saat zoom */
+.hero-section {
+    background-size: cover;
+    background-attachment: scroll;
+}
+
+/* music visualizer: jaga jarak aman di HP dan saat dekat footer */
+.music-visualizer {
+    bottom: max(14px, env(safe-area-inset-bottom) + 12px);
+}
+
+.music-visualizer.lifted {
+    bottom: calc(env(safe-area-inset-bottom) + 76px);
+}
+
+/* wish-card: beri layout yang stabil di HP */
+.wish-card {
+    display: block;
+    word-break: break-word;
+}
+
+.wish-card .from {
+    margin-right: 64px;
+}
+
+/* ruang tombol hapus */
+
+/* lightbox: padding lebih kecil agar tidak kepotong notch */
+.lb-figure {
+    padding: 16px;
+}
+
+/* tombol back-to-top di HP jangan terlalu dekat tepi */
+.back-to-top {
+    right: 12px;
+    bottom: 16px;
+}
+
+/* animasi global bisa dipause saat html[data-paused] di-set oleh JS */
+html[data-paused] .heart,
+html[data-paused] .balloon,
+html[data-paused] .music-visualizer .bar {
+    animation-play-state: paused;
+}
