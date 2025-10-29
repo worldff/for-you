@@ -51,39 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Tampilkan tombol jika autoplay gagal
-    function showPlayOverlay() {
-        const overlay = document.createElement("div");
-        overlay.classList.add("play-overlay");
-        overlay.innerHTML = `
-            <div class="overlay-content">
-                <p>💖 Tekan untuk mulai musik 💖</p>
-                <button id="playMusicBtn">Putar Sekarang 🎵</button>
-            </div>
-        `;
-        Object.assign(overlay.style, {
-            position: "fixed",
-            top: "0",
-            left: "0",
-            width: "100%",
-            height: "100%",
-            background: "rgba(0,0,0,0.8)",
-            color: "#fff",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column",
-            zIndex: "9999",
-        });
-        body.appendChild(overlay);
-
-        document.getElementById("playMusicBtn").addEventListener("click", () => {
-            audio.play();
-            overlay.remove();
-            showVisualizer();
-        });
-    }
-
     // Efek hearts 💕
     const floatingHearts = document.getElementById("floatingHearts");
     function createHeart() {
@@ -694,3 +661,4 @@ function showToast(title, body, type = '') {
   window.addEventListener('resize', setVH);
   window.addEventListener('orientationchange', setVH);
 })();
+
