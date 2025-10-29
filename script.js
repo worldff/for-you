@@ -51,6 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+
+
     // Efek hearts 💕
     const floatingHearts = document.getElementById("floatingHearts");
     function createHeart() {
@@ -662,3 +664,10 @@ function showToast(title, body, type = '') {
   window.addEventListener('orientationchange', setVH);
 })();
 
+document.addEventListener("DOMContentLoaded", () => {
+    // Menyembunyikan Visualizer Musik
+    const visualizer = document.getElementById("musicVisualizer");
+    if (visualizer) {
+        visualizer.style.display = "none";
+    }
+});
