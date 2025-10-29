@@ -2,177 +2,203 @@
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎂 Happy Birthday Sayang 💕</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎂 Happy Birthday Pia 💕</title>
+    <link rel="stylesheet" href="style.css" />
 </head>
+
+<!-- Toast container (info kecil di pojok) -->
+<div id="toastStack" class="toast-stack" aria-live="polite" aria-atomic="true"></div>
 
 <body>
     <div class="floating-hearts" id="floatingHearts"></div>
 
-    <!-- Hero Section -->
+    <!-- ===== NAVBAR (BARU) ===== -->
+    <header class="navbar">
+        <div class="nav-inner">
+            <a href="#" class="brand">💖 Birthday</a>
+            <nav>
+                <a href="#video">Video</a>
+                <a href="#memories">Kenangan</a>
+                <a href="#countdown">Countdown</a>
+                <a href="#guestbook">Ucapan</a>
+            </nav>
+            <div class="nav-actions">
+                <button id="toggleMusic" class="btn pill">🔈 Musik</button>
+                <button id="openWishModal" class="btn primary pill">💌 Kirim Ucapan</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
     <section class="hero-section">
-        <div class="container" id="message"></div>
         <h1 class="main-title">🎂 Happy Birthday Sayang 💕</h1>
-        <p class="subtitle"></p>
+        <p class="subtitle">Hari istimewa untuk seseorang yang paling spesial 💖</p>
         <div class="scroll-indicator" onclick="scrollToContent()">👇</div>
     </section>
 
-    <!-- Content Section -->
-    <div class="content-section">
-
-        <!-- Music Player -->
-        <div class="section-card">
-            <h2 class="section-title">Special Day 💕🎂✨</h2>
-            <div class="music-player">
-                <div class="song-info">
-                    <div class="song-title">Happy Birthday To You</div>
-                    <div class="song-artist">Lagu Spesial Untuk Kamu ❤️</div>
-                </div>
-
-                <audio id="birthdayAudio" preload="auto" loop>
-                    <source src="bergema.mp3" type="audio/mpeg">
-                    <p>Your browser does not support the audio element.</p>
-                </audio>
-
-                <button class="play-button" onclick="togglePlay()" id="playBtn"
-                    aria-label="Play/Pause music">▶️</button>
-
-                <div class="progress-container" onclick="setProgress(event)">
-                    <div class="progress-bar" id="progressBar"></div>
-                </div>
-
-                <div class="loading-spinner" id="loadingSpinner"></div>
-                <div class="error-message" id="errorMessage">Audio tidak dapat dimuat. Pastikan file audio tersedia.
-                </div>
-                <div class="success-message" id="successMessage">Audio berhasil dimuat!</div>
-
-                <p class="music-info-text">🎵 Tekan play untuk mendengarkan lagu spesial 🎵</p>
+    <!-- VIDEO SECTION -->
+    <section class="section-card video-section" id="video">
+        <h2 class="section-title">Special Day 💕🎂✨</h2>
+        <div class="video-frame">
+            <video id="birthdayVideo" autoplay muted loop playsinline>
+                <source src="ulangtahun.mp4" type="video/mp4" />
+            </video>
+            <div class="video-overlay">
+                <h3>Happy Birthday My Love 💖</h3>
+                <p>Semoga harimu seindah senyummu hari ini ✨</p>
             </div>
         </div>
+    </section>
 
-        <!-- Photo Gallery -->
-        <div class="section-card">
-            <h2 class="section-title">📸 Kenangan Bersama</h2>
-            <div class="memory-text">
-                Setiap foto adalah kenangan indah yang kita buat bersama. Upload foto-foto spesial kita dan buat galeri
-                kenangan yang tak terlupakan.
+    <!-- AUDIO -->
+    <audio id="birthdayAudio" preload="auto" autoplay loop>
+        <source src="bergema.mp3" type="audio/mpeg" />
+    </audio>
+
+    <!-- MEMORIES -->
+    <section class="memories" id="memories">
+        <h2>📸 Kenangan Bersama</h2>
+        <p>Setiap foto adalah kenangan indah yang kita buat bersama ❤️</p>
+
+        <div class="memory-grid">
+            <div class="memory-card">
+                <img src="images/foto1.jpg" alt="Foto Pertama" />
+                <h3>Foto Pertama</h3>
+                <p>Kenangan awal kita bersama</p>
             </div>
+            <div class="memory-card">
+                <img src="images/foto2.jpg" alt="Foto Favorit" />
+                <h3>Foto Favorit</h3>
+                <p>Momen yang paling berkesan</p>
+            </div>
+            <div class="memory-card">
+                <img src="images/foto3.jpg" alt="Foto Terbaru" />
+                <h3>Foto Terbaru</h3>
+                <p>Kenangan yang baru saja kita buat</p>
+            </div>
+            <div class="memory-card">
+                <img src="images/foto4.jpg" alt="Foto Birthday" />
+                <h3>Foto Birthday</h3>
+                <p>Momen spesial hari ini</p>
+            </div>
+        </div>
+    </section>
 
-            <div class="photo-gallery">
+    <!-- COUNTDOWN (BARU) -->
+    <!-- Atur tanggal di data-bday="YYYY-MM-DD" -->
+    <section id="countdown" class="section-card countdown-section" data-bday="03-11-2025">
+        <h2 class="section-title">⏳ Menuju Momen Spesial</h2>
+        <!-- Tambahan: lencana tanggal & progress ring -->
+        <div class="countdown-header">
+            <div class="date-badge" id="targetDateBadge">🎯 03 Nov 2025</div>
 
-                <!-- Foto Pertama -->
-                <div class="photo-card">
-                    <div class="photo-upload-area" onclick="triggerUpload(1)">
-                        <div class="upload-icon">📷</div>
-                        <div class="upload-text">Klik untuk upload foto pertama kita</div>
-                    </div>
-                    <input type="file" class="hidden-input" id="upload1" accept="image/*"
-                        onchange="handleImageUpload(1, event)">
-                    <div class="photo-info">
-                        <h3>Foto Pertama</h3>
-                        <p>Kenangan awal kita bersama</p>
-                    </div>
-                </div>
-
-                <!-- Foto Favorit -->
-                <div class="photo-card">
-                    <div class="photo-upload-area" onclick="triggerUpload(2)">
-                        <div class="upload-icon">💕</div>
-                        <div class="upload-text">Upload foto favorit kita</div>
-                    </div>
-                    <input type="file" class="hidden-input" id="upload2" accept="image/*"
-                        onchange="handleImageUpload(2, event)">
-                    <div class="photo-info">
-                        <h3>Foto Favorit</h3>
-                        <p>Momen yang paling berkesan</p>
-                    </div>
-                </div>
-
-                <!-- Foto Terbaru -->
-                <div class="photo-card">
-                    <div class="photo-upload-area" onclick="triggerUpload(3)">
-                        <div class="upload-icon">🌟</div>
-                        <div class="upload-text">Upload foto terbaru kita</div>
-                    </div>
-                    <input type="file" class="hidden-input" id="upload3" accept="image/*"
-                        onchange="handleImageUpload(3, event)">
-                    <div class="photo-info">
-                        <h3>Foto Terbaru</h3>
-                        <p>Kenangan yang baru saja kita buat</p>
-                    </div>
-                </div>
-
-                <!-- Foto Birthday -->
-                <div class="photo-card">
-                    <div class="photo-upload-area" onclick="triggerUpload(4)">
-                        <div class="upload-icon">🎂</div>
-                        <div class="upload-text">Upload foto birthday</div>
-                    </div>
-                    <input type="file" class="hidden-input" id="upload4" accept="image/*"
-                        onchange="handleImageUpload(4, event)">
-                    <div class="photo-info">
-                        <h3>Foto Birthday</h3>
-                        <p>Momen spesial hari ini</p>
-                    </div>
+            <!-- Progress ring menuju hari-H -->
+            <div class="progress-wrap" aria-hidden="true">
+                <svg class="progress-ring" width="120" height="120">
+                    <circle class="pr-bg" cx="60" cy="60" r="52"></circle>
+                    <circle class="pr-fg" cx="60" cy="60" r="52" stroke-dasharray="326" stroke-dashoffset="326">
+                    </circle>
+                </svg>
+                <div class="progress-center">
+                    <span id="prPercent">0%</span>
+                    <small>Progress</small>
                 </div>
             </div>
         </div>
 
-        <!-- Love Message -->
-        <div class="section-card">
+        <div class="countdown">
+            <div class="cd-item"><span id="cdDays">00</span><small>Hari</small></div>
+            <div class="cd-item"><span id="cdHours">00</span><small>Jam</small></div>
+            <div class="cd-item"><span id="cdMinutes">00</span><small>Menit</small></div>
+            <div class="cd-item"><span id="cdSeconds">00</span><small>Detik</small></div>
+        </div>
+        <p class="countdown-note">Hitung mundur otomatis ke ulang tahun berikutnya 💫</p>
+        </section>
+
+        <!-- LOVE MESSAGE -->
+        <section class="section-card love-section">
             <h2 class="section-title">💌 Pesan Cinta</h2>
             <div class="love-message">
-                <p>Selamat ulang tahun untuk orang yang paling istimewa dalam hidupku. Terima kasih sudah menjadi bagian
-                    terpenting dalam hidupku.
-                    Semoga hari ini dan selamanya kamu selalu bahagia, sehat, dan semua impianmu tercapai. I love you so
-                    much! 💕🎂✨</p>
+                <p>
+                    Selamat ulang tahun untuk orang yang paling istimewa dalam hidupku 💕.
+                    Terima kasih sudah menjadi bagian terpenting dalam hidupku.
+                    Semoga hari ini dan selamanya kamu selalu bahagia, sehat, dan semua
+                    impianmu tercapai. I love you so much! 💖🎂✨
+                </p>
+            </div>
+        </section>
+
+        <!-- GUESTBOOK / UCAPAN (BARU) -->
+        <section class="section-card guestbook" id="guestbook">
+            <h2 class="section-title">📝 Kartu Ucapan</h2>
+            <div id="wishList" class="wish-list empty">
+                <p class="muted">Belum ada ucapan. Jadilah yang pertama! ✨</p>
+            </div>
+            <div class="center">
+                <button id="openWishModal2" class="btn primary pill">Tulis Ucapan</button>
+            </div>
+        </section>
+
+        <!-- EXTRA FEATURES -->
+        <div id="extraFeatures">
+            <div id="musicVisualizer" class="music-visualizer">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+
+            <div id="balloonContainer"></div>
+
+            <footer class="footer-credit">
+                <p>💖 Dibuat dengan cinta oleh <strong>Someone Special</strong> 💖</p>
+            </footer>
+        </div>
+
+        <!-- LIGHTBOX (BARU) -->
+        <div id="lightbox" class="lightbox" aria-hidden="true">
+            <div class="lb-backdrop"></div>
+            <figure class="lb-figure">
+                <img id="lbImage" alt="Preview" />
+                <figcaption id="lbCaption"></figcaption>
+                <button id="lbClose" class="btn icon">&times;</button>
+            </figure>
+        </div>
+
+        <!-- MODAL UCAPAN (BARU) -->
+        <div id="wishModal" class="modal" aria-hidden="true">
+            <div class="modal-backdrop"></div>
+            <div class="modal-card">
+                <header class="modal-header">
+                    <h3>💌 Tulis Ucapan</h3>
+                    <button class="btn icon" id="closeWishModal">&times;</button>
+                </header>
+                <form id="wishForm" class="modal-body">
+                    <div class="field">
+                        <label>Nama</label>
+                        <input type="text" id="wishName" placeholder="Namamu" required />
+                    </div>
+                    <div class="field">
+                        <label>Ucapan</label>
+                        <textarea id="wishText" rows="4" placeholder="Tulis ucapan terbaikmu..." required></textarea>
+                    </div>
+                    <footer class="modal-footer">
+                        <button type="button" class="btn" id="cancelWish">Batal</button>
+                        <button type="submit" class="btn primary">Kirim ✨</button>
+                    </footer>
+                </form>
             </div>
         </div>
-    </div>
+        
 
-    <!-- Script -->
-    <script>
-        // Scroll ke konten
-        function scrollToContent() {
-            document.querySelector('.content-section').scrollIntoView({ behavior: 'smooth' });
-        }
 
-        // Play / Pause lagu
-        function togglePlay() {
-            const audio = document.getElementById('birthdayAudio');
-            const playBtn = document.getElementById('playBtn');
-            if (audio.paused) {
-                audio.play();
-                playBtn.textContent = '⏸️';
-            } else {
-                audio.pause();
-                playBtn.textContent = '▶️';
-            }
-        }
+        <!-- BACK TO TOP (BARU) -->
+        <button id="backToTop" class="back-to-top" aria-label="Kembali ke atas">↑</button>
 
-        // Upload foto
-        function triggerUpload(num) {
-            document.getElementById('upload' + num).click();
-        }
-
-        function handleImageUpload(num, event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const uploadArea = document.querySelectorAll('.photo-upload-area')[num - 1];
-                    uploadArea.style.backgroundImage = `url('${e.target.result}')`;
-                    uploadArea.style.backgroundSize = "cover";
-                    uploadArea.style.backgroundPosition = "center";
-                    uploadArea.innerHTML = ""; // hapus teks dan ikon
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-    </script>
-    <script src="script.js"></script>
+        <script src="script.js"></script>
 </body>
 
 </html>
