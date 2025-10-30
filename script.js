@@ -52,7 +52,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-
     // Efek hearts 💕
     const floatingHearts = document.getElementById("floatingHearts");
     function createHeart() {
@@ -65,19 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => heart.remove(), 5000);
     }
     setInterval(createHeart, 700);
-
-    // Efek balon 🎈
-    const balloonContainer = document.getElementById("balloonContainer");
-    function createBalloon() {
-        const balloon = document.createElement("div");
-        balloon.classList.add("balloon");
-        balloon.textContent = ["🎈", "🎉", "🎊"][Math.floor(Math.random() * 3)];
-        balloon.style.left = `${Math.random() * 100}vw`;
-        balloon.style.animationDuration = `${4 + Math.random() * 3}s`;
-        balloonContainer.appendChild(balloon);
-        setTimeout(() => balloon.remove(), 7000);
-    }
-    setInterval(createBalloon, 1200);
 
     // Efek ketik untuk subtitle
     const romanticMessage = "Selamat ulang tahun sayang 💕 Semoga harimu penuh kebahagiaan dan cinta!";
@@ -221,6 +207,7 @@ if (musicBtn && audioEl) {
     cancelBtn?.addEventListener('click', close);
     modal?.addEventListener('click', e => { if (e.target.classList.contains('modal-backdrop')) close(); });
 
+    // Fungsi untuk merender ucapan
     function render() {
         if (!list) return;
         const data = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
@@ -240,29 +227,49 @@ if (musicBtn && audioEl) {
         return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
     }
 
+    // Menangani pengiriman formulir
     form?.addEventListener('submit', e => {
         e.preventDefault();
         const name = document.getElementById('wishName').value.trim();
         const text = document.getElementById('wishText').value.trim();
         if (!name || !text) return;
+
+        // Menyimpan ucapan ke localStorage
         const data = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
         data.unshift({ name, text, ts: Date.now() });
         localStorage.setItem(LS_KEY, JSON.stringify(data));
-        render();
-        confettiEmoji(); // 🎉 efek
+
+        render(); // Merender ulang ucapan yang sudah disimpan
+
+        // Menampilkan efek confetti
+        confettiEmoji();
+
+       
         form.reset();
         modal.setAttribute('aria-hidden', 'true');
     });
 
+    // Merender daftar ucapan saat halaman dimuat
     render();
 })();
 
-/* ===== Confetti Emoji sederhana ===== */
+// Fungsi untuk menampilkan Toast Notification
+function showToast(title, body, type = '') {
+    const host = document.getElementById('toastStack');
+    if (!host) return;
+    const el = document.createElement('div');
+    el.className = `toast ${type}`;
+    el.innerHTML = `<div class="t-title">${title}</div><div class="t-body">${body || ''}</div>`;
+    host.appendChild(el);
+    setTimeout(() => el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 280 }).onfinish = () => el.remove(), 2800);
+}
+
+// Fungsi untuk menampilkan efek confetti
 function confettiEmoji() {
     const COUNT = 30;
     for (let i = 0; i < COUNT; i++) {
         const s = document.createElement('div');
-        s.textContent = ['🎉', '✨', '💖', '🎊'][Math.floor(Math.random() * 4)];
+        s.textContent = ['🎉', '✨', '🎊'][Math.floor(Math.random() * 4)];
         Object.assign(s.style, {
             position: 'fixed', left: (Math.random() * 100) + 'vw', top: '-10px',
             fontSize: (18 + Math.random() * 14) + 'px', transform: `rotate(${Math.random() * 360}deg)`,
@@ -270,12 +277,13 @@ function confettiEmoji() {
         });
         document.body.appendChild(s);
         const duration = 2500 + Math.random() * 1200;
-        s.animate([
+        s.animate([ 
             { transform: s.style.transform, top: '-10px', opacity: 1 },
             { transform: `translateY(80vh) rotate(${Math.random() * 360}deg)`, top: '80vh', opacity: 0.1 }
         ], { duration, easing: 'cubic-bezier(.2,.6,.2,1)' }).onfinish = () => s.remove();
     }
 }
+
 
 /* ===== Back to top ===== */
 (function () {
@@ -341,16 +349,6 @@ function confettiEmoji() {
     });
 })();
 
-/* 3) Visualizer guard: jika elemennya bukan <canvas>, jangan error & tetap aktif */
-(function () {
-    const vis = document.getElementById('musicVisualizer');
-    if (!vis) return;
-    if (vis.tagName !== 'CANVAS') {
-        const fit = () => { vis.classList.add('active'); };
-        window.addEventListener('resize', fit);
-        fit();
-    }
-})();
 
 /* 4) Cleanup intervals custom ketika unload (prevent leak) */
 (function () {
@@ -364,31 +362,6 @@ function confettiEmoji() {
     window.addEventListener('beforeunload', () => intervals.forEach(clearInterval));
 })();
 
-/* 5) Auto-lift visualizer saat footer terlihat (biar tidak ketutupan) */
-(function () {
-    const vis = document.getElementById('musicVisualizer');
-    const footer = document.querySelector('.footer-credit');
-    if (!vis || !footer) return;
-
-    const io = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) { vis.classList.add('lifted'); }
-            else { vis.classList.remove('lifted'); }
-        });
-    }, { root: null, threshold: 0.05 });
-    io.observe(footer);
-
-    const onResize = () => {
-        if (window.innerHeight < 600) {
-            vis.style.bottom = `calc(env(safe-area-inset-bottom) + 72px)`;
-        } else {
-            vis.style.bottom = '';
-        }
-    };
-    window.addEventListener('resize', onResize);
-    window.addEventListener('orientationchange', onResize);
-    onResize();
-})();
 
 /* 6) ADDON: Tombol Hapus Ucapan (tanpa mengubah kode asli render) */
 (function () {
@@ -542,85 +515,6 @@ function showToast(title, body, type = '') {
     setTimeout(() => el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 280 }).onfinish = () => el.remove(), 2800);
 }
 
-/* C) Theme toggle (menyimpan preferensi) */
-(function () {
-    const btn = document.getElementById('toggleTheme');
-    const KEY = 'hb_theme_v1';
-    try {
-        const saved = localStorage.getItem(KEY);
-        if (saved === 'dark') document.body.classList.add('theme-dark');
-    } catch (_) { }
-    if (btn) {
-        btn.addEventListener('click', () => {
-            document.body.classList.toggle('theme-dark');
-            try {
-                localStorage.setItem(KEY, document.body.classList.contains('theme-dark') ? 'dark' : 'light');
-            } catch (_) { }
-        });
-    }
-})();
-
-/* D) Web Share API (bagikan halaman) */
-(function () {
-    const btn = document.getElementById('sharePage');
-    if (!btn || !navigator.share) return;
-    btn.addEventListener('click', async () => {
-        try {
-            await navigator.share({
-                title: document.title,
-                text: 'Lihat halaman ulang tahun spesial ini 💖',
-                url: location.href
-            });
-            showToast('Terkirim', 'Tautan berhasil dibagikan!', 'success');
-        } catch (_) { }
-    });
-})();
-
-/* E) Progress ring: % kemajuan menuju target (03 Nov 2025 dari data-bday) */
-(function () {
-    const sec = document.getElementById('countdown');
-    const fg = document.querySelector('.progress-ring .pr-fg');
-    const percentEl = document.getElementById('prPercent');
-    const dateBadge = document.getElementById('targetDateBadge');
-    if (!sec || !fg) return;
-
-    // Ambil tanggal ISO dari atribut (sudah dinormalisasi oleh skrip kamu)
-    const base = (sec.getAttribute('data-bday') || '').trim(); // YYYY-MM-DD
-    const [yy, mm, dd] = base.split('-').map(n => parseInt(n, 10));
-    if (!yy || !mm || !dd) return;
-
-    // Tampilkan badge yang rapi (03 Nov 2025)
-    if (dateBadge) {
-        const namaBulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-        dateBadge.textContent = `🎯 ${String(dd).padStart(2, '0')} ${namaBulan[mm - 1]} ${yy}`;
-    }
-
-    const CIRC = 2 * Math.PI * 52; // r=52 (lihat CSS)
-    const dash = v => fg.style.strokeDashoffset = String(CIRC - (CIRC * v));
-
-    function prevTarget(date) { return new Date(date.getFullYear() - 1, mm - 1, dd, 0, 0, 0); }
-    function nextTarget(date) {
-        const t = new Date(date.getFullYear(), mm - 1, dd, 0, 0, 0);
-        return (t < date) ? new Date(date.getFullYear() + 1, mm - 1, dd, 0, 0, 0) : t;
-    }
-
-    function update() {
-        const now = new Date();
-        const nxt = nextTarget(now);
-        const prv = prevTarget(nxt);
-        const total = nxt - prv;
-        const gone = now - prv;
-        const ratio = Math.min(1, Math.max(0, gone / total));
-        dash(ratio);
-        if (percentEl) percentEl.textContent = Math.round(ratio * 100) + '%';
-    }
-
-    // inisialisasi stroke length
-    fg.setAttribute('stroke-dasharray', String(CIRC));
-    fg.setAttribute('stroke-dashoffset', String(CIRC));
-    update();
-    setInterval(update, 1000);
-})();
 
 /* F) Section reveal (tanpa library) */
 (function () {
