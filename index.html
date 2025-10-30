@@ -60,7 +60,7 @@
     <section class="memories" id="memories">
         <h2>📸 Foto Bersama Piyaa💕</h2>
         <p>
-            
+
         </p>
 
         <div class="memory-grid">
@@ -91,6 +91,9 @@
     <!-- Atur tanggal di data-bday="YYYY-MM-DD" -->
     <section id="countdown" class="section-card countdown-section" data-bday="03-11-2025">
         <h2 class="section-title">⏳ Menuju Momen Spesial</h2>
+        <div class="countdown-container">
+            <p class="countdown-date">03 November 2025</p>
+        </div>
         <div class="countdown">
             <div class="cd-item"><span id="cdDays">00</span><small>Hari</small></div>
             <div class="cd-item"><span id="cdHours">00</span><small>Jam</small></div>
@@ -98,90 +101,80 @@
             <div class="cd-item"><span id="cdSeconds">00</span><small>Detik</small></div>
         </div>
         <p class="countdown-note"></p>
-        </section>
+    </section>
 
-        <!-- LOVE MESSAGE -->
-        <section class="section-card love-section">
-            <h2 class="section-title">💌 Pesan</h2>
-            <div class="love-message">
-                <p>
-                    Happy birthday to the most special person in my life 💕.
-                    Thank you for being the most important part of my life.
-                    May you be happy, healthy, and all your dreams come true today and always.
-                    I love you so much! 💖🎂✨
-                </p>
-            </div>
-        </section>
+    <!-- LOVE MESSAGE -->
+    <section class="section-card love-section">
+        <h2 class="section-title">💌 Pesan</h2>
+        <div class="love-message">
+            <p>
+                Happy birthday to the most special person in my life 💕.
+                Thank you for being the most important part of my life.
+                May you be happy, healthy, and all your dreams come true today and always.
+                I love you so much! 💖🎂✨
+            </p>
+        </div>
+    </section>
 
-        <!-- GUESTBOOK / UCAPAN (BARU) -->
-        <section class="section-card guestbook" id="guestbook">
-            <h2 class="section-title">📝 Kartu Ucapan</h2>
-            <div id="wishList" class="wish-list empty">
-                <p class="muted">Belum ada ucapan. Jadilah yang pertama! ✨</p>
-            </div>
-            <div class="center">
-                <button id="openWishModal2" class="btn primary pill">Tulis Ucapan</button>
-            </div>
-        </section>
-
-        <!-- EXTRA FEATURES -->
-        <div id="extraFeatures">
-            <div id="musicVisualizer" class="music-visualizer">
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-            </div>
-
-            <div id="balloonContainer"></div>
-
-            <footer class="footer-credit">
-                <p>💖 Dibuat oleh <strong>Arman Maulana</strong> 💖</p>
-            </footer>
+    <!-- GUESTBOOK / UCAPAN (BARU) -->
+    <section class="section-card guestbook" id="guestbook">
+        <h2 class="section-title">📝 Kartu Ucapan</h2>
+        <div id="wishList" class="wish-list empty">
+            <p class="muted">Belum ada ucapan. Jadilah yang pertama! ✨</p>
         </div>
 
-        <!-- LIGHTBOX (BARU) -->
-        <div id="lightbox" class="lightbox" aria-hidden="true">
-            <div class="lb-backdrop"></div>
-            <figure class="lb-figure">
-                <img id="lbImage" alt="Preview" />
-                <figcaption id="lbCaption"></figcaption>
-                <button id="lbClose" class="btn icon">&times;</button>
-            </figure>
         </div>
+    </section>
 
-        <!-- MODAL UCAPAN (BARU) -->
-        <div id="wishModal" class="modal" aria-hidden="true">
-            <div class="modal-backdrop"></div>
-            <div class="modal-card">
-                <header class="modal-header">
-                    <h3>💌 Tulis Ucapan</h3>
-                    <button class="btn icon" id="closeWishModal">&times;</button>
-                </header>
-                <form id="wishForm" class="modal-body">
-                    <div class="field">
-                        <label>Nama</label>
-                        <input type="text" id="wishName" placeholder="Namamu" required />
-                    </div>
-                    <div class="field">
-                        <label>Ucapan</label>
-                        <textarea id="wishText" rows="4" placeholder="Tulis ucapan terbaikmu..." required></textarea>
-                    </div>
-                    <footer class="modal-footer">
-                        <button type="button" class="btn" id="cancelWish">Batal</button>
-                        <button type="submit" class="btn primary">Kirim ✨</button>
-                    </footer>
-                </form>
-            </div>
+
+    <div id="balloonContainer"></div>
+
+    <footer class="footer-credit">
+        <p>Dibuat oleh <strong>Arman Maulana</strong> </p>
+    </footer>
+    </div>
+
+    <!-- LIGHTBOX (BARU) -->
+    <div id="lightbox" class="lightbox" aria-hidden="true">
+        <div class="lb-backdrop"></div>
+        <figure class="lb-figure">
+            <img id="lbImage" alt="Preview" />
+            <figcaption id="lbCaption"></figcaption>
+            <button id="lbClose" class="btn icon">&times;</button>
+        </figure>
+    </div>
+
+    <!-- MODAL UCAPAN (BARU) -->
+    <div id="wishModal" class="modal" aria-hidden="true">
+        <div class="modal-backdrop"></div>
+        <div class="modal-card">
+            <header class="modal-header">
+                <h3>💌 Tulis Ucapan Untuk Piyaa</h3>
+                <button class="btn icon" id="closeWishModal">&times;</button>
+            </header>
+            <form id="wishForm" class="modal-body">
+                <div class="field">
+                    <label>Nama</label>
+                    <input type="text" id="wishName" placeholder="Namamu" required />
+                </div>
+                <div class="field">
+                    <label>Ucapan</label>
+                    <textarea id="wishText" rows="4" placeholder="Tulis ucapan terbaikmu..." required></textarea>
+                </div>
+                <footer class="modal-footer">
+                    <button type="button" class="btn" id="cancelWish">Batal</button>
+                    <button type="submit" class="btn primary">Kirim ✨</button>
+                </footer>
+            </form>
         </div>
-        
+    </div>
 
 
-        <!-- BACK TO TOP (BARU) -->
-        <button id="backToTop" class="back-to-top" aria-label="Kembali ke atas">↑</button>
 
-        <script src="script.js"></script>
+    <!-- BACK TO TOP (BARU) -->
+    <button id="backToTop" class="back-to-top" aria-label="Kembali ke atas">↑</button>
+
+    <script src="script.js"></script>
 </body>
 
 </html>
