@@ -1172,3 +1172,18 @@ html[data-paused] .balloon,
 html[data-paused] .music-visualizer .bar {
     animation-play-state: paused;
 }
+
+
+.countdown-container {
+  display: flex;
+  justify-content: center; /* Menempatkan secara horizontal */
+  align-items: center;     /* Menempatkan secara vertikal */
+  height: 5vh;           /* Membuat kontainer setinggi viewport */
+  text-align: center;      /* Menjaga teks tetap di tengah */
+}
+
+.countdown-date {
+  font-size: 1rem; /* Ukuran font */
+  font-weight: bold;
+  color: #e31b6d; /* Warna teks */
+}
