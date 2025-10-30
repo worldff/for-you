@@ -212,7 +212,9 @@ if (musicBtn && audioEl) {
         if (!list) return;
         const data = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
         if (!data.length) {
-            list.classList.add('empty'); list.innerHTML = '<p class="muted">Belum ada ucapan. Jadilah yang pertama! ✨</p>'; return;
+            list.classList.add('empty'); 
+            list.innerHTML = '<p class="muted">Belum ada ucapan. Jadilah yang pertama! ✨</p>';
+            return;
         }
         list.classList.remove('empty');
         list.innerHTML = data.map(w => `
@@ -221,8 +223,19 @@ if (musicBtn && audioEl) {
         <div class="text">${escapeHtml(w.text)}</div>
       </article>
     `).join('');
+        // Pastikan tampilan daftar ucapan di-update secara dinamis
+        addCardAnimations();
     }
 
+    // Menambahkan animasi untuk kartu ucapan yang baru ditambahkan
+    function addCardAnimations() {
+        const cards = document.querySelectorAll('.wish-card');
+        cards.forEach(card => {
+            card.classList.add('fade-in');
+        });
+    }
+
+    // Fungsi untuk melarikan karakter-karakter yang dapat dieksekusi sebagai HTML
     function escapeHtml(s) {
         return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
     }
@@ -232,7 +245,12 @@ if (musicBtn && audioEl) {
         e.preventDefault();
         const name = document.getElementById('wishName').value.trim();
         const text = document.getElementById('wishText').value.trim();
-        if (!name || !text) return;
+
+        // Validasi form jika nama atau ucapan kosong
+        if (!name || !text) {
+            alert("Harap isi nama dan ucapan sebelum mengirim!");
+            return;
+        }
 
         // Menyimpan ucapan ke localStorage
         const data = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
@@ -244,7 +262,7 @@ if (musicBtn && audioEl) {
         // Menampilkan efek confetti
         confettiEmoji();
 
-       
+        // Reset form dan tutup modal
         form.reset();
         modal.setAttribute('aria-hidden', 'true');
     });
