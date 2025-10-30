@@ -21,8 +21,8 @@
             <a href="#" class="brand">💖 Birthday</a>
             <nav>
                 <a href="#video">Video</a>
-                <a href="#memories">Kenangan</a>
-                <a href="#countdown">Countdown</a>
+                <a href="#memories">Foto</a>
+                <a href="#countdown">Pesan</a>
                 <a href="#guestbook">Ucapan</a>
             </nav>
             <div class="nav-actions">
@@ -59,9 +59,8 @@
     <!-- MEMORIES -->
     <section class="memories" id="memories">
         <h2>📸 Foto Bersama Piyaa💕</h2>
-        <p>
-
-        </p>
+        <p></p>
+        <p></p>
 
         <div class="memory-grid">
             <div class="memory-card">
@@ -90,18 +89,19 @@
     <!-- COUNTDOWN (BARU) -->
     <!-- Atur tanggal di data-bday="YYYY-MM-DD" -->
     <section id="countdown" class="section-card countdown-section" data-bday="03-11-2025">
-        <h2 class="section-title">⏳ Menuju Momen Spesial</h2>
-        <div class="countdown-container">
-            <p class="countdown-date">03 November 2025</p>
-        </div>
-        <div class="countdown">
-            <div class="cd-item"><span id="cdDays">00</span><small>Hari</small></div>
-            <div class="cd-item"><span id="cdHours">00</span><small>Jam</small></div>
-            <div class="cd-item"><span id="cdMinutes">00</span><small>Menit</small></div>
-            <div class="cd-item"><span id="cdSeconds">00</span><small>Detik</small></div>
-        </div>
-        <p class="countdown-note"></p>
-    </section>
+    <h2 class="section-title">
+        <span>⏳ Menuju Momen Spesial 💖</span>
+    </h2>
+    <div class="countdown-date">03 November 2025</div>
+    <div class="countdown">
+        <div class="cd-item"><span id="cdDays">00</span><small>Hari</small></div>
+        <div class="cd-item"><span id="cdHours">00</span><small>Jam</small></div>
+        <div class="cd-item"><span id="cdMinutes">00</span><small>Menit</small></div>
+        <div class="cd-item"><span id="cdSeconds">00</span><small>Detik</small></div>
+    </div>
+    <p class="countdown-note"></p>
+</section>
+
 
     <!-- LOVE MESSAGE -->
     <section class="section-card love-section">
@@ -126,22 +126,13 @@
         </div>
     </section>
 
+    <body>
 
-    <div id="balloonContainer"></div>
+  <footer class="footer-credit">
+    Dibuat oleh <strong>Arman Maulana</strong>
+  </footer>
+</body>
 
-    <footer class="footer-credit">
-        <p>Dibuat oleh <strong>Arman Maulana</strong> </p>
-    </footer>
-    </div>
-
-    <!-- LIGHTBOX (BARU) -->
-    <div id="lightbox" class="lightbox" aria-hidden="true">
-        <div class="lb-backdrop"></div>
-        <figure class="lb-figure">
-            <img id="lbImage" alt="Preview" />
-            <figcaption id="lbCaption"></figcaption>
-            <button id="lbClose" class="btn icon">&times;</button>
-        </figure>
     </div>
 
     <!-- MODAL UCAPAN (BARU) -->
@@ -168,11 +159,6 @@
             </form>
         </div>
     </div>
-
-
-
-    <!-- BACK TO TOP (BARU) -->
-    <button id="backToTop" class="back-to-top" aria-label="Kembali ke atas">↑</button>
 
     <script src="script.js"></script>
 </body>
