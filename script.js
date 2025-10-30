@@ -4,9 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const visualizer = document.getElementById("musicVisualizer");
     const body = document.body;
 
-    // Pastikan visualizer aktif
-    visualizer.classList.add("active");
-
     // Fungsi untuk mulai musik
     function startMusic() {
         audio.play().then(() => {
@@ -18,40 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Fungsi visualizer
-    function showVisualizer() {
-        try {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const analyser = audioContext.createAnalyser();
-            const source = audioContext.createMediaElementSource(audio);
-            source.connect(analyser);
-            analyser.connect(audioContext.destination);
-            analyser.fftSize = 256;
-            const bufferLength = analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-            const canvasCtx = visualizer.getContext("2d");
-
-            function draw() {
-                requestAnimationFrame(draw);
-                analyser.getByteFrequencyData(dataArray);
-                canvasCtx.clearRect(0, 0, visualizer.width, visualizer.height);
-
-                const barWidth = (visualizer.width / bufferLength) * 2.5;
-                let x = 0;
-                for (let i = 0; i < bufferLength; i++) {
-                    const barHeight = dataArray[i] / 2;
-                    canvasCtx.fillStyle = `rgb(${barHeight + 100}, 50, 150)`;
-                    canvasCtx.fillRect(x, visualizer.height - barHeight, barWidth, barHeight);
-                    x += barWidth + 1;
-                }
-            }
-            draw();
-        } catch (e) {
-            console.error("Visualizer error:", e);
-        }
-    }
-
-
+   
     // Efek hearts 💕
     const floatingHearts = document.getElementById("floatingHearts");
     function createHeart() {
@@ -64,19 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => heart.remove(), 5000);
     }
     setInterval(createHeart, 700);
-
-    // Efek ketik untuk subtitle
-    const romanticMessage = "Selamat ulang tahun sayang 💕 Semoga harimu penuh kebahagiaan dan cinta!";
-    const subtitle = document.querySelector(".subtitle");
-    let i = 0;
-    function typeWriter() {
-        if (i < romanticMessage.length) {
-            subtitle.textContent += romanticMessage.charAt(i);
-            i++;
-            setTimeout(typeWriter, 80);
-        }
-    }
-    typeWriter();
 
     // Jalankan musik saat halaman dimuat
     startMusic();
@@ -164,31 +115,7 @@ if (musicBtn && audioEl) {
     setInterval(tick, 1000);
 })();
 
-/* ===== Lightbox untuk Memory Images ===== */
-(function () {
-    const cards = document.querySelectorAll('.memory-card img');
-    const lb = document.getElementById('lightbox');
-    const lbImg = document.getElementById('lbImage');
-    const lbCap = document.getElementById('lbCaption');
-    const lbClose = document.getElementById('lbClose');
-    const close = () => lb.setAttribute('aria-hidden', 'true');
-
-    if (!lb) return;
-    cards.forEach(img => {
-        img.style.cursor = 'zoom-in';
-        img.addEventListener('click', () => {
-            lbImg.src = img.src;
-            const card = img.closest('.memory-card');
-            lbCap.textContent = card?.querySelector('h3')?.textContent || img.alt || 'Preview';
-            lb.setAttribute('aria-hidden', 'false');
-        });
-    });
-    lbClose?.addEventListener('click', close);
-    lb.addEventListener('click', (e) => { if (e.target.classList.contains('lb-backdrop')) close(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
-})();
-
-/* ===== Guestbook / Kartu Ucapan (localStorage) ===== */
+/* ===== Guestbook / Kartu Ucapan (Menggunakan API dan MongoDB) ===== */
 (function () {
     const modal = document.getElementById('wishModal');
     const openBtns = [document.getElementById('openWishModal'), document.getElementById('openWishModal2')].filter(Boolean);
@@ -197,7 +124,7 @@ if (musicBtn && audioEl) {
     const form = document.getElementById('wishForm');
     const list = document.getElementById('wishList');
 
-    const LS_KEY = 'birthday_wishes_v1';
+    const API_URL = 'http://localhost:3000/api/wishes';
 
     const open = () => modal?.setAttribute('aria-hidden', 'false');
     const close = () => modal?.setAttribute('aria-hidden', 'true');
@@ -207,69 +134,71 @@ if (musicBtn && audioEl) {
     cancelBtn?.addEventListener('click', close);
     modal?.addEventListener('click', e => { if (e.target.classList.contains('modal-backdrop')) close(); });
 
-    // Fungsi untuk merender ucapan
-    function render() {
-        if (!list) return;
-        const data = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
-        if (!data.length) {
-            list.classList.add('empty'); 
-            list.innerHTML = '<p class="muted">Belum ada ucapan. Jadilah yang pertama! ✨</p>';
-            return;
-        }
-        list.classList.remove('empty');
-        list.innerHTML = data.map(w => `
-      <article class="wish-card">
-        <div class="from">💖 ${escapeHtml(w.name)}</div>
-        <div class="text">${escapeHtml(w.text)}</div>
-      </article>
-    `).join('');
-        // Pastikan tampilan daftar ucapan di-update secara dinamis
-        addCardAnimations();
-    }
-
-    // Menambahkan animasi untuk kartu ucapan yang baru ditambahkan
-    function addCardAnimations() {
-        const cards = document.querySelectorAll('.wish-card');
-        cards.forEach(card => {
-            card.classList.add('fade-in');
-        });
-    }
-
-    // Fungsi untuk melarikan karakter-karakter yang dapat dieksekusi sebagai HTML
     function escapeHtml(s) {
         return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
     }
 
-    // Menangani pengiriman formulir
+    function render() {
+        if (!list) return;
+        fetch(API_URL)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length === 0) {
+                    list.classList.add('empty');
+                    list.innerHTML = '<p class="muted">Belum ada ucapan. Jadilah yang pertama! ✨</p>';
+                } else {
+                    list.classList.remove('empty');
+                    list.innerHTML = data.map(w => `
+                        <article class="wish-card">
+                            <div class="from">💖 ${escapeHtml(w.name)}</div>
+                            <div class="text">${escapeHtml(w.text)}</div>
+                            <button class="delete-btn" data-id="${w._id}">Hapus</button>
+                        </article>
+                    `).join('');
+                }
+            })
+            .catch(error => {
+                list.innerHTML = '<p class="error">Gagal memuat ucapan. Coba lagi nanti.</p>';
+            });
+    }
+
     form?.addEventListener('submit', e => {
         e.preventDefault();
         const name = document.getElementById('wishName').value.trim();
         const text = document.getElementById('wishText').value.trim();
-
-        // Validasi form jika nama atau ucapan kosong
         if (!name || !text) {
-            alert("Harap isi nama dan ucapan sebelum mengirim!");
+            alert("Nama dan ucapan harus diisi!");
             return;
         }
-
-        // Menyimpan ucapan ke localStorage
-        const data = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
-        data.unshift({ name, text, ts: Date.now() });
-        localStorage.setItem(LS_KEY, JSON.stringify(data));
-
-        render(); // Merender ulang ucapan yang sudah disimpan
-
-        // Menampilkan efek confetti
-        confettiEmoji();
-
-        // Reset form dan tutup modal
-        form.reset();
-        modal.setAttribute('aria-hidden', 'true');
+        fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, text })
+        })
+        .then(response => response.json())
+        .then(() => {
+            render();
+            modal.setAttribute('aria-hidden', 'true');
+            form.reset();
+        })
+        .catch(error => alert('Gagal mengirim ucapan!'));
     });
 
-    // Merender daftar ucapan saat halaman dimuat
+    list.addEventListener('click', (e) => {
+        if (e.target && e.target.classList.contains('delete-btn')) {
+            const wishId = e.target.getAttribute('data-id');
+            if (confirm('Yakin ingin menghapus ucapan ini?')) {
+                fetch(`${API_URL}/${wishId}`, { method: 'DELETE' })
+                    .then(response => response.json())
+                    .then(() => render())
+                    .catch(error => alert('Gagal menghapus ucapan.'));
+            }
+        }
+    });
+
     render();
 })();
+
 
 // Fungsi untuk menampilkan Toast Notification
 function showToast(title, body, type = '') {
@@ -287,7 +216,7 @@ function confettiEmoji() {
     const COUNT = 30;
     for (let i = 0; i < COUNT; i++) {
         const s = document.createElement('div');
-        s.textContent = ['🎉', '✨', '🎊'][Math.floor(Math.random() * 4)];
+        s.textContent = ['🎉', '✨', '💖', '🎊'][Math.floor(Math.random() * 4)];
         Object.assign(s.style, {
             position: 'fixed', left: (Math.random() * 100) + 'vw', top: '-10px',
             fontSize: (18 + Math.random() * 14) + 'px', transform: `rotate(${Math.random() * 360}deg)`,
@@ -302,60 +231,9 @@ function confettiEmoji() {
     }
 }
 
-
-/* ===== Back to top ===== */
-(function () {
-    const btn = document.getElementById('backToTop');
-    if (!btn) return;
-    const onScroll = () => {
-        if (window.scrollY > 600) { btn.classList.add('show'); } else { btn.classList.remove('show'); }
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-    onScroll();
-})();
-
-
 // ========================= PENINGKATAN / FITUR TAMBAHAN (BARU) =========================
 // CATATAN: Semua penambahan di bawah ini berdiri sendiri & tidak mengubah fungsi asli di atas.
 
-/* 1) Audio Autoplay Unlock + Remember Preference */
-(function () {
-    const audio = document.getElementById('birthdayAudio');
-    if (!audio) return;
-    const KEY = 'music_pref_play_v1';
-
-    // terapkan preferensi terakhir
-    try {
-        const pref = localStorage.getItem(KEY);
-        if (pref === 'pause') { audio.pause?.(); }
-    } catch (_) { }
-
-    const ensurePlay = async () => {
-        try { await audio.play(); } catch (_) { }
-    };
-
-    // butuh gesture user untuk beberapa browser
-    const unlock = async () => {
-        await ensurePlay();
-        document.removeEventListener('click', unlock);
-        document.removeEventListener('touchstart', unlock);
-        document.removeEventListener('keydown', unlock);
-    };
-    document.addEventListener('click', unlock, { once: true });
-    document.addEventListener('touchstart', unlock, { once: true });
-    document.addEventListener('keydown', unlock, { once: true });
-
-    // simpan preferensi saat user pause/play via tombol
-    const btn = document.getElementById('toggleMusic');
-    if (btn) {
-        btn.addEventListener('click', () => {
-            try {
-                localStorage.setItem(KEY, audio.paused ? 'pause' : 'play');
-            } catch (_) { }
-        });
-    }
-})();
 
 /* 2) Hemat baterai: hentikan animasi saat tab tidak aktif (CSS bisa pakai [data-paused]) */
 (function () {
@@ -366,20 +244,6 @@ function confettiEmoji() {
         if (document.hidden) { pauseAnims(); } else { resumeAnims(); }
     });
 })();
-
-
-/* 4) Cleanup intervals custom ketika unload (prevent leak) */
-(function () {
-    const intervals = [];
-    const _setInterval = window.setInterval;
-    window.setInterval = function (handler, timeout) {
-        const id = _setInterval(handler, timeout);
-        intervals.push(id);
-        return id;
-    };
-    window.addEventListener('beforeunload', () => intervals.forEach(clearInterval));
-})();
-
 
 /* 6) ADDON: Tombol Hapus Ucapan (tanpa mengubah kode asli render) */
 (function () {
@@ -411,44 +275,7 @@ function confettiEmoji() {
         document.head.appendChild(el);
     })();
 
-    // render versi bayangan (kalau perlu) dari localStorage
-    function renderShadow() {
-        const data = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
-        if (!data.length) {
-            list.classList.add('empty');
-            list.innerHTML = '<p class="muted">Belum ada ucapan. Jadilah yang pertama! ✨</p>';
-            return;
-        }
-        list.classList.remove('empty');
-        list.innerHTML = data.map((w, i) => `
-      <article class="wish-card">
-        <div class="from">💖 ${escapeHtml(w.name)}</div>
-        <div class="text">${escapeHtml(w.text)}</div>
-        <button class="delete-btn" data-index="${i}">Hapus</button>
-      </article>
-    `).join('');
-    }
-    function escapeHtml(s) {
-        return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
-    }
-
-    // sisipkan tombol hapus ke DOM yang sudah ada
-    function ensureDeleteButtons() {
-        const cards = list.querySelectorAll('.wish-card');
-        if (!cards.length) return;
-        const data = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
-        cards.forEach((card, i) => {
-            if (card.querySelector('.delete-btn')) return;
-            const btn = document.createElement('button');
-            btn.className = 'delete-btn';
-            btn.textContent = 'Hapus';
-            btn.dataset.index = String(i);
-            card.appendChild(btn);
-        });
-        if (list.querySelectorAll('.delete-btn').length !== data.length) {
-            renderShadow();
-        }
-    }
+    
 
     // event delegation hapus
     list.addEventListener('click', (e) => {
@@ -475,10 +302,6 @@ function confettiEmoji() {
         }
     });
 
-    // perhatikan perubahan DOM (render asli) -> sisipkan tombol lagi
-    const mo = new MutationObserver(() => ensureDeleteButtons());
-    mo.observe(list, { childList: true, subtree: true });
-
     // sync setelah submit form asli
     const form = document.getElementById('wishForm');
     if (form) {
@@ -486,19 +309,6 @@ function confettiEmoji() {
             setTimeout(() => ensureDeleteButtons(), 0);
         }, true);
     }
-
-    // sync antar tab
-    window.addEventListener('storage', (e) => {
-        if (e.key === LS_KEY) {
-            renderShadow();
-            ensureDeleteButtons();
-        }
-    });
-
-    // inisialisasi
-    const dataNow = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
-    if (dataNow.length) { renderShadow(); }
-    ensureDeleteButtons();
 })();
 
 /* =================== UI/UX ADDONS – TANPA MENGUBAH KODE ASLI =================== */
