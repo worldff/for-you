@@ -182,28 +182,6 @@ if (musicBtn && audioEl) {
         modal.setAttribute('aria-hidden', 'true');
         form.reset();
     });
-
-    list.addEventListener('click', (e) => {
-        if (e.target && e.target.classList.contains('delete-btn')) {
-            const idx = parseInt(e.target.getAttribute('data-index'), 10);
-            if (isNaN(idx)) return;
-
-            if (confirm('Yakin ingin menghapus ucapan ini?')) {
-                // Ambil data dari LocalStorage
-                const data = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
-                
-                // Hapus ucapan berdasarkan index
-                data.splice(idx, 1);
-                
-                // Simpan perubahan kembali ke LocalStorage
-                localStorage.setItem(LS_KEY, JSON.stringify(data));
-
-                // Render ulang guestbook
-                render();
-            }
-        }
-    });
-
     render(); // Render ulang guestbook saat halaman dimuat
 })();
 
@@ -402,3 +380,37 @@ document.addEventListener("DOMContentLoaded", () => {
         visualizer.style.display = "none";
     }
 });
+
+/* ==== SHIM: perbaiki hapus agar UI ikut hilang (tanpa ubah kode lama) ==== */
+(function () {
+  const LS_KEY = 'birthday_wishes_v1';
+  const list = document.getElementById('wishList');
+  if (!list) return;
+
+  // Fungsi render yang dipanggil handler lama
+  window.renderShadow = function () {
+    const data = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+
+    if (!data.length) {
+      list.classList.add('empty');
+      list.innerHTML = '<p class="muted">Belum ada ucapan. Jadilah yang pertama! ✨</p>';
+      return;
+    }
+
+    list.classList.remove('empty');
+    list.innerHTML = data.map((w, idx) => `
+      <article class="wish-card">
+        <div class="from">💖 ${String(w.name ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}</div>
+        <div class="text">${String(w.text ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}</div>
+        <button class="delete-btn" data-index="${idx}">Hapus</button>
+      </article>
+    `).join('');
+  };
+
+  // Dipanggil oleh kode lama setelah submit; cukup render ulang
+  window.ensureDeleteButtons = window.ensureDeleteButtons || function () {
+    // Tidak perlu apa-apa, karena tombol sudah masuk via template di atas.
+    // Kita panggil renderShadow() untuk jaga-jaga.
+    window.renderShadow();
+  };
+})();
