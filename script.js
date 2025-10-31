@@ -124,7 +124,7 @@ if (musicBtn && audioEl) {
     const form = document.getElementById('wishForm');
     const list = document.getElementById('wishList');
 
-    const API_URL = 'http://localhost:3000/api/wishes';
+    const LS_KEY = 'birthday_wishes_v1'; // Key untuk LocalStorage
 
     const open = () => modal?.setAttribute('aria-hidden', 'false');
     const close = () => modal?.setAttribute('aria-hidden', 'true');
@@ -140,26 +140,21 @@ if (musicBtn && audioEl) {
 
     function render() {
         if (!list) return;
-        fetch(API_URL)
-            .then(response => response.json())
-            .then(data => {
-                if (data.length === 0) {
-                    list.classList.add('empty');
-                    list.innerHTML = '<p class="muted">Belum ada ucapan. Jadilah yang pertama! ✨</p>';
-                } else {
-                    list.classList.remove('empty');
-                    list.innerHTML = data.map(w => `
-                        <article class="wish-card">
-                            <div class="from">💖 ${escapeHtml(w.name)}</div>
-                            <div class="text">${escapeHtml(w.text)}</div>
-                            <button class="delete-btn" data-id="${w._id}">Hapus</button>
-                        </article>
-                    `).join('');
-                }
-            })
-            .catch(error => {
-                list.innerHTML = '<p class="error">Gagal memuat ucapan. Coba lagi nanti.</p>';
-            });
+        const data = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+        
+        if (data.length === 0) {
+            list.classList.add('empty');
+            list.innerHTML = '<p class="muted">Belum ada ucapan. Jadilah yang pertama! ✨</p>';
+        } else {
+            list.classList.remove('empty');
+            list.innerHTML = data.map((w, idx) => `
+                <article class="wish-card">
+                    <div class="from">💖 ${escapeHtml(w.name)}</div>
+                    <div class="text">${escapeHtml(w.text)}</div>
+                    <button class="delete-btn" data-index="${idx}">Hapus</button>
+                </article>
+            `).join('');
+        }
     }
 
     form?.addEventListener('submit', e => {
@@ -170,34 +165,48 @@ if (musicBtn && audioEl) {
             alert("Nama dan ucapan harus diisi!");
             return;
         }
-        fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, text })
-        })
-        .then(response => response.json())
-        .then(() => {
-            render();
-            modal.setAttribute('aria-hidden', 'true');
-            form.reset();
-        })
-        .catch(error => alert('Gagal mengirim ucapan!'));
+
+        // Ambil data yang sudah ada di LocalStorage
+        const data = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+
+        // Tambahkan ucapan baru
+        data.push({ name, text });
+
+        // Simpan kembali ke LocalStorage
+        localStorage.setItem(LS_KEY, JSON.stringify(data));
+
+        // Render ulang guestbook
+        render();
+
+        // Tutup modal dan reset form
+        modal.setAttribute('aria-hidden', 'true');
+        form.reset();
     });
 
     list.addEventListener('click', (e) => {
         if (e.target && e.target.classList.contains('delete-btn')) {
-            const wishId = e.target.getAttribute('data-id');
+            const idx = parseInt(e.target.getAttribute('data-index'), 10);
+            if (isNaN(idx)) return;
+
             if (confirm('Yakin ingin menghapus ucapan ini?')) {
-                fetch(`${API_URL}/${wishId}`, { method: 'DELETE' })
-                    .then(response => response.json())
-                    .then(() => render())
-                    .catch(error => alert('Gagal menghapus ucapan.'));
+                // Ambil data dari LocalStorage
+                const data = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+                
+                // Hapus ucapan berdasarkan index
+                data.splice(idx, 1);
+                
+                // Simpan perubahan kembali ke LocalStorage
+                localStorage.setItem(LS_KEY, JSON.stringify(data));
+
+                // Render ulang guestbook
+                render();
             }
         }
     });
 
-    render();
+    render(); // Render ulang guestbook saat halaman dimuat
 })();
+
 
 
 // Fungsi untuk menampilkan Toast Notification
